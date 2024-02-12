@@ -1,9 +1,9 @@
 {
-	"id": "obsidian-svelte-plugin",
-	"name": "Obsidian Svelte Plugin",
-	"description": "A powerful Obsidian plugin template that provides a solid foundation for kickstarting your Svelte projects with Obsidian.",
-	"author": "Emilio Toledo",
-	"authorUrl": "https://github.com/emilio-toledo",
+	"id": "contextual-sidecar",
+	"name": "Contextual Sidecar",
+	"description": "A plugin that enables context-dependent sidecar panels in Obsidian.",
+	"author": "Matthew Turk",
+	"authorUrl": "https://matthewturk.github.io/",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"isDesktopOnly": false
