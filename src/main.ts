@@ -1,18 +1,11 @@
-import { Plugin, MarkdownRenderer } from "obsidian";
+import { Plugin } from "obsidian";
 import {
   ContextualSidecarPanelView,
   VIEW_TYPE_CONTEXTUAL_SIDECAR,
 } from "./views/ContextualSidecarPanelView";
 import "virtual:uno.css";
 import { currentFile } from "./store";
-
-interface ContextualSidecarPanelSettings {
-  mySetting: string;
-}
-
-const DEFAULT_SETTINGS: ContextualSidecarPanelSettings = {
-  mySetting: "default",
-};
+import { type ContextualSidecarPanelSettings, DEFAULT_SETTINGS } from "./types";
 
 export default class ContextualSidecarPanel extends Plugin {
   settings!: ContextualSidecarPanelSettings;
@@ -36,15 +29,18 @@ export default class ContextualSidecarPanel extends Plugin {
 	
     this.registerEvent(
       this.app.workspace.on("file-open", (file) => {
-		currentFile.set(file);
+		    currentFile.set(file);
       })
     );
-    this.addRibbonIcon("dice", "Activate view", () => {
-      this.activateView();
+    this.addCommand({
+      id: "activate-contextual-sidecar",
+      name: "Activate Contextual Sidecar",
+      callback: () => this.activateView(),
     });
   }
 
   onunload() {
+    this.app.workspace.detachLeavesOfType(VIEW_TYPE_CONTEXTUAL_SIDECAR);
   }
 
   async activateView() {

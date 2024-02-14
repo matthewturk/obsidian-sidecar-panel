@@ -3,7 +3,6 @@ import { ItemView, TFile } from "obsidian";
 import Component from "../components/ContextualSidecarPanel.svelte";
 
 export const VIEW_TYPE_CONTEXTUAL_SIDECAR = "contextual-sidecar";
-import {currentFile} from "../store";
 
 export class ContextualSidecarPanelView extends ItemView {
 	component!: Component;
