@@ -1,39 +1,44 @@
 <script lang="ts">
-  import { App, TFile } from "obsidian";
-  let svelteUrl = "https://svelte.dev/";
-  let tailwindcssUrl = "https://tailwindcss.com/";
-  let input: string = "";
+  import { App, MarkdownRenderer, Component, TFile } from "obsidian";
+  import { onMount } from "svelte";
   import { currentFile } from "../store";
-  let _currentFile: TFile | null = null;
-  let sidecarPanelTemplate: string = "";
+  let destination: HTMLElement;
   export let app: App;
-  currentFile.subscribe((file) => {
-    if (!file) return;
-    let cache = app.metadataCache.getFileCache(file);
-    if (cache && cache.frontmatter) {
-      sidecarPanelTemplate = cache.frontmatter["sidecar-panel"];
-    }
+  export let parent: Component;
+
+  onMount(() => {
+    currentFile.subscribe(async (file) => {
+      if (!file) return;
+      destination.innerHTML = "";
+      let cache = app.metadataCache.getFileCache(file);
+      if (cache && cache.frontmatter && cache.frontmatter["sidecar-panel"]) {
+        let sidecarPanelTemplate = cache.frontmatter["sidecar-panel"];
+        console.log(sidecarPanelTemplate);
+        sidecarPanelTemplate = sidecarPanelTemplate.startsWith("[[")
+          ? sidecarPanelTemplate.substring(2, sidecarPanelTemplate.length - 2)
+          : sidecarPanelTemplate;
+        let sidecarPanelTemplateFile = app.metadataCache.getFirstLinkpathDest(
+          sidecarPanelTemplate,
+          file.path
+        );
+        if (
+          !sidecarPanelTemplateFile ||
+          !(sidecarPanelTemplateFile instanceof TFile)
+        )
+          return;
+        let sidecarPanelMarkdown = await app.vault.cachedRead(
+          sidecarPanelTemplateFile
+        );
+        MarkdownRenderer.render(
+          app,
+          sidecarPanelMarkdown,
+          destination,
+          file.path,
+          parent
+        );
+      }
+    });
   });
 </script>
 
-<div class="break-words">
-  <h1 class="">Example View</h1>
-  <p>
-    This is an example of an Obsidian View made with <a href={svelteUrl}
-      >Svelte</a
-    >
-    and <a href={tailwindcssUrl}>Tailwindcss</a>.
-  </p>
-
-  <h2>Reactivity</h2>
-  <h3>Input</h3>
-  <input
-    type="text"
-    placeholder="Write here"
-    maxlength="115"
-    bind:value={input}
-  />
-  <p>CurrentFile: {_currentFile?.name}</p>
-  <p>sidecarPanelTemplate: {sidecarPanelTemplate}</p>
-  <p>Input: {input}</p>
-</div>
+<div class="break-words" bind:this={destination}></div>

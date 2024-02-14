@@ -21,7 +21,8 @@ export class ContextualSidecarPanelView extends ItemView {
 		this.component = new Component({
 			target: this.contentEl,
 			props: {
-				app: this.app
+				app: this.app,
+				parent: this,
 			},
 		});
 	}

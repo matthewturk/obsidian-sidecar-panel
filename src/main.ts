@@ -1,4 +1,4 @@
-import { Plugin } from "obsidian";
+import { Plugin, MarkdownRenderer } from "obsidian";
 import {
   ContextualSidecarPanelView,
   VIEW_TYPE_CONTEXTUAL_SIDECAR,
@@ -26,17 +26,16 @@ export default class ContextualSidecarPanel extends Plugin {
   }
 
   async onload() {
-    console.log("loading");
     await this.loadSettings();
 
     this.registerView(
       VIEW_TYPE_CONTEXTUAL_SIDECAR,
       (leaf) => new ContextualSidecarPanelView(leaf)
     );
-    console.log("Registering event");
+
+	
     this.registerEvent(
       this.app.workspace.on("file-open", (file) => {
-        console.log("a new file has entered the arena", file);
 		currentFile.set(file);
       })
     );
@@ -46,7 +45,6 @@ export default class ContextualSidecarPanel extends Plugin {
   }
 
   onunload() {
-    console.log("unloading plugin");
   }
 
   async activateView() {
