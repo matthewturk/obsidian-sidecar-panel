@@ -1,7 +1,19 @@
 <script lang="ts">
+  import { App, TFile } from "obsidian";
   let svelteUrl = "https://svelte.dev/";
   let tailwindcssUrl = "https://tailwindcss.com/";
   let input: string = "";
+  import { currentFile } from "../store";
+  let _currentFile: TFile | null = null;
+  let sidecarPanelTemplate: string = "";
+  export let app: App;
+  currentFile.subscribe((file) => {
+    if (!file) return;
+    let cache = app.metadataCache.getFileCache(file);
+    if (cache && cache.frontmatter) {
+      sidecarPanelTemplate = cache.frontmatter["sidecar-panel"];
+    }
+  });
 </script>
 
 <div class="break-words">
@@ -21,5 +33,7 @@
     maxlength="115"
     bind:value={input}
   />
+  <p>CurrentFile: {_currentFile?.name}</p>
+  <p>sidecarPanelTemplate: {sidecarPanelTemplate}</p>
   <p>Input: {input}</p>
 </div>

@@ -7,7 +7,7 @@ import { PluginOption, defineConfig } from "vite";
 const setOutDir = (mode: string) => {
 	switch (mode) {
 		case "development":
-			return "./test-vault/.obsidian/plugins/obsidian-svelte-plugin";
+			return "./test-vault/.obsidian/plugins/obsidian-sidecar-panel";
 		case "production":
 			return "build";
 	}
@@ -29,7 +29,7 @@ export default defineConfig(({ mode }) => {
 					entryFileNames: "main.js",
 					assetFileNames: "styles.css",
 					sourcemapBaseUrl: pathToFileURL(
-						`${__dirname}/test-vault/.obsidian/plugins/obsidian-svelte-plugin/`,
+						`${__dirname}/test-vault/.obsidian/plugins/obsidian-sidecar-panel/`,
 					).toString(),
 				},
 				external: [
