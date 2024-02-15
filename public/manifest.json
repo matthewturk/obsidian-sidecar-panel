@@ -4,7 +4,7 @@
 	"description": "A plugin that enables context-dependent sidecar panels in Obsidian.",
 	"author": "Matthew Turk",
 	"authorUrl": "https://matthewturk.github.io/",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"minAppVersion": "0.15.0",
 	"isDesktopOnly": false
 }
