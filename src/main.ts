@@ -104,7 +104,7 @@ class ContextualSidecarPanelSettingTab extends PluginSettingTab {
                 this.plugin.settings.tagMaps.some((e) => e.tag == newTag)
               ) {
                 console.error(
-                  "ForceViewMode: This tag already has a panel associated with",
+                  "ForceViewMode: This tag is already associated with a panel: ",
                   newTag
                 );
 

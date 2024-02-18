@@ -30,29 +30,27 @@
 
     if (cache) {
       const fileTags = getAllTags(cache) || [];
-      let sidecarPanelMarkdown = "";
-      $contextualSidecarPanelSetting.tagMaps.forEach(async ({ tag, panel }) => {
+      let sidecarPanelMarkdown: string[] = [];
+      for (const { tag, panel } of $contextualSidecarPanelSetting.tagMaps) {
         // I don't like that this is quadratic.  But, it shouldn't be called that often.  Right?
-        fileTags.forEach(async (tagCacheEntry) => {
+        for (const tagCacheEntry of fileTags) {
           if (
             (tagCacheEntry.startsWith("#")
               ? tagCacheEntry.slice(1)
               : tagCacheEntry) == (tag.startsWith("#") ? tag.slice(1) : tag)
           ) {
-            sidecarPanelMarkdown += await readSidecarPanel(panel, "/");
+            sidecarPanelMarkdown.push(await readSidecarPanel(panel, "/"));
           }
-        });
-      });
+        }
+      }
       if (cache.frontmatter && cache.frontmatter["sidecar-panel"]) {
-        let sidecarPanelTemplate = cache.frontmatter["sidecar-panel"];
-        sidecarPanelMarkdown += await readSidecarPanel(
-          sidecarPanelTemplate,
-          "/"
+        sidecarPanelMarkdown.push(
+          await readSidecarPanel(cache.frontmatter["sidecar-panel"], "/")
         );
       }
       await MarkdownRenderer.render(
         app,
-        sidecarPanelMarkdown,
+        sidecarPanelMarkdown.join("\n"),
         destination,
         file.path,
         parent
