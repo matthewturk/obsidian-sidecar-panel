@@ -1,42 +1,67 @@
 <script lang="ts">
-  import { App, MarkdownRenderer, Component, TFile } from "obsidian";
+  import {
+    App,
+    MarkdownRenderer,
+    Component,
+    TFile,
+    getAllTags,
+  } from "obsidian";
   import { onMount } from "svelte";
-  import { currentFile } from "../store";
+  import { currentFile, contextualSidecarPanelSetting } from "../store";
   let destination: HTMLElement;
   export let app: App;
   export let parent: Component;
 
-  onMount(() => {
-    currentFile.subscribe(async (file) => {
-      if (!file) return;
-      destination.innerHTML = "";
-      let cache = app.metadataCache.getFileCache(file);
-      if (cache && cache.frontmatter && cache.frontmatter["sidecar-panel"]) {
-        let sidecarPanelTemplate = cache.frontmatter["sidecar-panel"];
-        console.log(sidecarPanelTemplate);
-        sidecarPanelTemplate = sidecarPanelTemplate.startsWith("[[")
-          ? sidecarPanelTemplate.substring(2, sidecarPanelTemplate.length - 2)
-          : sidecarPanelTemplate;
-        let sidecarPanelTemplateFile = app.metadataCache.getFirstLinkpathDest(
-          sidecarPanelTemplate,
-          file.path
-        );
-        if (
-          !sidecarPanelTemplateFile ||
-          !(sidecarPanelTemplateFile instanceof TFile)
-        )
-          return;
-        let sidecarPanelMarkdown = await app.vault.cachedRead(
-          sidecarPanelTemplateFile
-        );
-        MarkdownRenderer.render(
-          app,
-          sidecarPanelMarkdown,
-          destination,
-          file.path,
-          parent
+  async function readSidecarPanel(panelName: string, basePath: string) {
+    panelName = panelName.startsWith("[[")
+      ? panelName.substring(2, panelName.length - 2)
+      : panelName;
+    let panelFile = app.metadataCache.getFirstLinkpathDest(panelName, basePath);
+    if (!panelFile || !(panelFile instanceof TFile)) {
+      return "";
+    }
+    return await app.vault.cachedRead(panelFile);
+  }
+
+  async function updateSidecarPanel(file: TFile | null) {
+    if (!file) return;
+    if (destination) destination.innerHTML = "";
+    let cache = app.metadataCache.getFileCache(file);
+
+    if (cache) {
+      const fileTags = getAllTags(cache) || [];
+      let sidecarPanelMarkdown: string[] = [];
+      for (const { tag, panel } of $contextualSidecarPanelSetting.tagMaps) {
+        // I don't like that this is quadratic.  But, it shouldn't be called that often.  Right?
+        for (const tagCacheEntry of fileTags) {
+          if (
+            (tagCacheEntry.startsWith("#")
+              ? tagCacheEntry.slice(1)
+              : tagCacheEntry) == (tag.startsWith("#") ? tag.slice(1) : tag)
+          ) {
+            sidecarPanelMarkdown.push(await readSidecarPanel(panel, "/"));
+          }
+        }
+      }
+      if (cache.frontmatter && cache.frontmatter["sidecar-panel"]) {
+        sidecarPanelMarkdown.push(
+          await readSidecarPanel(cache.frontmatter["sidecar-panel"], "/")
         );
       }
+      await MarkdownRenderer.render(
+        app,
+        sidecarPanelMarkdown.join("\n"),
+        destination,
+        file.path,
+        parent
+      );
+    }
+  }
+
+  onMount(() => {
+    currentFile.subscribe(updateSidecarPanel);
+    contextualSidecarPanelSetting.subscribe(() => {
+      updateSidecarPanel($currentFile);
     });
   });
 </script>

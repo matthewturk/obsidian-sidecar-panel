@@ -16,9 +16,12 @@ for instance, the attendees of a meeting.
 
 ## How to Use
 
-Right now there aren't any settings.  All you have to do is set the property
-`sidecar-panel` in a file (perhaps in a template!) to enable it.  When a file
-with that set is open and focused, the right leaf will include that sidecar
+There are two ways to associate a sidecar panel with a file.  The first is to 
+set the property `sidecar-panel` in a file (perhaps in a template!) to enable
+it.  The second is to add a mapping between a tag (such as `#daily-note`) and a
+sidecar panel file (such as `daily-note-editor.md`).  The mapping between tags
+and panel files can be done in the `Settings` for the sidecar panel.  When a
+file with that set is open and focused, the right leaf will include that sidecar
 panel.
 
 For instance, if you have `mysidecar.md` in your Vault with this content:
@@ -38,10 +41,14 @@ widgets which -- crucially! -- will modify `example.md` rather than
 `mysidecar.md`.  Now you have a widget that'll be visible all the time, settable
 on a per-file basis, to keep handy buttons and other things visible.
 
+## Multiple Panel Files
+
+It's possible to set multiple cascading files, such that you have multiple concatenated into one sidecar.  This can be done through multiple tag maps or through having a tag map and a `sidecar-panel` property.  These will be concatenated and shown in order of the tag maps and then the `sidecar-panel` file.
+
 ## Roadmap
 
 - [ ] Add support for [metadatamenu](https://github.com/mdelobelle/metadatamenu) `fileClass`es to apply `sidecar-panel` attributes across queries.
-- [ ] Add per-tag support, so that not all files have to have their properties modified to benefit.
+- [x] Add per-tag support, so that not all files have to have their properties modified to benefit.
 - [ ] Better support changes in properties and sidecar files for open files.
 
 ## License
