@@ -1,4 +1,4 @@
-import { Plugin } from "obsidian";
+import { App, Plugin, PluginSettingTab, Setting } from "obsidian";
 import {
   ContextualSidecarPanelView,
   VIEW_TYPE_CONTEXTUAL_SIDECAR,
@@ -26,10 +26,9 @@ export default class ContextualSidecarPanel extends Plugin {
       (leaf) => new ContextualSidecarPanelView(leaf)
     );
 
-	
     this.registerEvent(
       this.app.workspace.on("file-open", (file) => {
-		    currentFile.set(file);
+        currentFile.set(file);
       })
     );
     this.addCommand({
@@ -37,6 +36,7 @@ export default class ContextualSidecarPanel extends Plugin {
       name: "Activate Contextual Sidecar",
       callback: () => this.activateView(),
     });
+    this.addSettingTab(new ContextualSidecarPanelSettingTab(this.app, this));
   }
 
   onunload() {
@@ -54,5 +54,102 @@ export default class ContextualSidecarPanel extends Plugin {
     this.app.workspace.revealLeaf(
       this.app.workspace.getLeavesOfType(VIEW_TYPE_CONTEXTUAL_SIDECAR)[0]
     );
+  }
+}
+
+class ContextualSidecarPanelSettingTab extends PluginSettingTab {
+  plugin: ContextualSidecarPanel;
+  constructor(app: App, plugin: ContextualSidecarPanel) {
+    super(app, plugin);
+    this.plugin = plugin;
+  }
+  display(): void {
+    let { containerEl } = this;
+    containerEl.empty();
+    containerEl.createEl("h2", {
+      text: "Settings for Contextual Sidecar Panel",
+    });
+
+    // Some of this logic was inspired by the bwydoogh/obsidian-force-view-mode-of-note plugin.
+
+    new Setting(this.containerEl)
+      .setDesc("Add new tag map")
+      .addButton((button) => {
+        button
+          .setTooltip("Add another tag to map to a panel")
+          .setButtonText("+")
+          .setCta()
+          .onClick(async () => {
+            this.plugin.settings.tagMaps.push({
+              tag: "",
+              panel: "",
+            });
+            await this.plugin.saveSettings();
+            this.display();
+          });
+      });
+
+    this.plugin.settings.tagMaps.forEach(({ tag, panel }, index) => {
+      const div = containerEl.createEl("div");
+
+      const s = new Setting(this.containerEl)
+        .addSearch((cb) => {
+          cb.setPlaceholder("Example: #daily-note")
+            .setValue(tag)
+            .onChange(async (newTag) => {
+              if (
+                newTag &&
+                this.plugin.settings.tagMaps.some((e) => e.tag == newTag)
+              ) {
+                console.error(
+                  "ForceViewMode: This tag already has a panel associated with",
+                  newTag
+                );
+
+                return;
+              }
+
+              this.plugin.settings.tagMaps[index].tag = newTag;
+
+              await this.plugin.saveSettings();
+            });
+        })
+        .addSearch((cb) => {
+          cb.setPlaceholder("Example: daily-note-panel")
+            .setValue(panel)
+            .onChange(async (newPanel) => {
+              if (
+                newPanel &&
+                this.plugin.settings.tagMaps.some((e) => e.tag == newPanel)
+              ) {
+                console.error(
+                  "ForceViewMode: This tag already has a panel associated with",
+                  newPanel
+                );
+
+                return;
+              }
+
+              this.plugin.settings.tagMaps[index].panel = newPanel;
+
+              await this.plugin.saveSettings();
+            });
+        })
+        .addExtraButton((cb) => {
+          cb.setIcon("cross")
+            .setTooltip("Delete")
+            .onClick(async () => {
+              this.plugin.settings.tagMaps.splice(index, 1);
+
+              await this.plugin.saveSettings();
+
+              this.display();
+            });
+        });
+
+      s.infoEl.remove();
+
+      div.appendChild(containerEl.lastChild as Node);
+    });
   }
 }

@@ -1,6 +1,6 @@
 export interface ContextualSidecarPanelSettings {
-	mySetting: string;
+	tagMaps: { tag: string; panel: string }[];
 }
 export const DEFAULT_SETTINGS: ContextualSidecarPanelSettings = {
-	mySetting: "default",
+	tagMaps: [],
 };
