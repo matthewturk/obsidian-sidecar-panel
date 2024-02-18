@@ -1,4 +1,6 @@
 [
   "obsidian-svelte-plugin",
-  "hot-reload"
+  "hot-reload",
+  "contextual-sidecar",
+  "obsidian-meta-bind-plugin"
 ]
