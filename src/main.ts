@@ -4,7 +4,7 @@ import {
   VIEW_TYPE_CONTEXTUAL_SIDECAR,
 } from "./views/ContextualSidecarPanelView";
 import "virtual:uno.css";
-import { currentFile } from "./store";
+import { contextualSidecarPanelSetting, currentFile } from "./store";
 import { type ContextualSidecarPanelSettings, DEFAULT_SETTINGS } from "./types";
 
 export default class ContextualSidecarPanel extends Plugin {
@@ -15,11 +15,13 @@ export default class ContextualSidecarPanel extends Plugin {
   }
 
   async saveSettings() {
+    contextualSidecarPanelSetting.set(this.settings);
     await this.saveData(this.settings);
   }
 
   async onload() {
     await this.loadSettings();
+    contextualSidecarPanelSetting.set(this.settings);
 
     this.registerView(
       VIEW_TYPE_CONTEXTUAL_SIDECAR,
