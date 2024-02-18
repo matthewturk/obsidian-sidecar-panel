@@ -12,7 +12,10 @@ source itself.
 One use case, which motivated me to make this, was that I often want to have
 different contextual buttons or metadata input lists that display to the side,
 so that while I am editing a file I don't have to scroll to the top to change,
-for instance, the attendees of a meeting.
+for instance, the attendees of a meeting.  Or, so that I can have some buttons
+that say things like "Add another TODO" or something like that.
+
+![A screenshot showing the sidecar panel in action.](sidecar-panel-example.png)
 
 ## How to Use
 
@@ -43,7 +46,11 @@ on a per-file basis, to keep handy buttons and other things visible.
 
 ## Multiple Panel Files
 
-It's possible to set multiple cascading files, such that you have multiple concatenated into one sidecar.  This can be done through multiple tag maps or through having a tag map and a `sidecar-panel` property.  These will be concatenated and shown in order of the tag maps and then the `sidecar-panel` file.
+It's possible to set multiple cascading files, such that you have multiple
+concatenated into one sidecar.  This can be done through multiple tag maps or
+through having a tag map and a `sidecar-panel` property.  These will be
+concatenated and shown in order of the tag maps and then the `sidecar-panel`
+file.
 
 ## Roadmap
 
@@ -55,3 +62,7 @@ It's possible to set multiple cascading files, such that you have multiple conca
 
 This template is available under the [MIT License](LICENSE). Feel free to modify
 and use it to create your own Obsidian plugins.
+
+# Funding
+
+If you find this plugin useful, please consider donating to the [Cystic Fibrosis Foundation](https://give.cff.org/).
