@@ -33,11 +33,14 @@
       let sidecarPanelMarkdown: string[] = [];
       for (const { tag, panel } of $contextualSidecarPanelSetting.tagMaps) {
         // I don't like that this is quadratic.  But, it shouldn't be called that often.  Right?
+        const normalizedTag = tag.startsWith("#") ? tag.slice(1) : tag;
         for (const tagCacheEntry of fileTags) {
+          const normalizedEntry = tagCacheEntry.startsWith("#")
+            ? tagCacheEntry.slice(1)
+            : tagCacheEntry;
           if (
-            (tagCacheEntry.startsWith("#")
-              ? tagCacheEntry.slice(1)
-              : tagCacheEntry) == (tag.startsWith("#") ? tag.slice(1) : tag)
+            normalizedEntry == normalizedTag ||
+            normalizedEntry.startsWith(`${normalizedTag}/`)
           ) {
             sidecarPanelMarkdown.push(await readSidecarPanel(panel, "/"));
           }

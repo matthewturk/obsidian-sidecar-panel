@@ -32,10 +32,7 @@ For instance, if you have `mysidecar.md` in your Vault with this content:
 ```
 `INPUT[number:somenumber]`
 
-````
-INPUT[list:somelist]
-````
-
+`INPUT[list:somelist]`
 ```
 
 And then another file, `example.md`, with the property `sidecar-panel` set to

@@ -39,6 +39,18 @@ export default class ContextualSidecarPanel extends Plugin {
       callback: () => this.activateView(),
     });
     this.addSettingTab(new ContextualSidecarPanelSettingTab(this.app, this));
+    this.app.workspace.onLayoutReady(async () => {
+      // obsidian rss reader inspired this
+      if (
+        this.app.workspace.getLeavesOfType(VIEW_TYPE_CONTEXTUAL_SIDECAR)
+          .length > 0
+      ) {
+        return;
+      }
+      await this.app.workspace.getRightLeaf(false).setViewState({
+        type: VIEW_TYPE_CONTEXTUAL_SIDECAR,
+      });
+    });
   }
 
   onunload() {
