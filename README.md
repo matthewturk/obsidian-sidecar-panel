@@ -41,6 +41,10 @@ widgets which -- crucially! -- will modify `example.md` rather than
 `mysidecar.md`.  Now you have a widget that'll be visible all the time, settable
 on a per-file basis, to keep handy buttons and other things visible.
 
+## Multiple Panel Files
+
+It's possible to set multiple cascading files, such that you have multiple concatenated into one sidecar.  This can be done through multiple tag maps or through having a tag map and a `sidecar-panel` property.  These will be concatenated and shown in order of the tag maps and then the `sidecar-panel` file.
+
 ## Roadmap
 
 - [ ] Add support for [metadatamenu](https://github.com/mdelobelle/metadatamenu) `fileClass`es to apply `sidecar-panel` attributes across queries.
