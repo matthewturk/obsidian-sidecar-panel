@@ -34,8 +34,8 @@ export default class ContextualSidecarPanel extends Plugin {
       })
     );
     this.addCommand({
-      id: "activate-contextual-sidecar",
-      name: "Activate Contextual Sidecar",
+      id: "activate-panel",
+      name: "Activate Panel",
       callback: () => this.activateView(),
     });
     this.addSettingTab(new ContextualSidecarPanelSettingTab(this.app, this));
@@ -51,10 +51,6 @@ export default class ContextualSidecarPanel extends Plugin {
         type: VIEW_TYPE_CONTEXTUAL_SIDECAR,
       });
     });
-  }
-
-  onunload() {
-    this.app.workspace.detachLeavesOfType(VIEW_TYPE_CONTEXTUAL_SIDECAR);
   }
 
   async activateView() {
