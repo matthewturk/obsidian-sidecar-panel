@@ -82,6 +82,9 @@ class ContextualSidecarPanelSettingTab extends PluginSettingTab {
 
     // Some of this logic was inspired by the bwydoogh/obsidian-force-view-mode-of-note plugin.
 
+    new Setting(this.containerEl).setDesc(
+      "Specify a sidecar panel for all files with a given tag.  These will be applied in order."
+    );
     new Setting(this.containerEl)
       .setDesc("Add new tag map")
       .addButton((button) => {
@@ -101,7 +104,6 @@ class ContextualSidecarPanelSettingTab extends PluginSettingTab {
 
     this.plugin.settings.tagMaps.forEach(({ tag, panel }, index) => {
       const div = containerEl.createEl("div");
-
       const s = new Setting(this.containerEl)
         .addSearch((cb) => {
           cb.setPlaceholder("Example: #daily-note")
