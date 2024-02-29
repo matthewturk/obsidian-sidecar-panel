@@ -54,12 +54,15 @@ export default class ContextualSidecarPanel extends Plugin {
   }
 
   async activateView() {
-    this.app.workspace.detachLeavesOfType(VIEW_TYPE_CONTEXTUAL_SIDECAR);
-
-    await this.app.workspace.getRightLeaf(false).setViewState({
-      type: VIEW_TYPE_CONTEXTUAL_SIDECAR,
-      active: true,
-    });
+    if (
+      this.app.workspace.getLeavesOfType(VIEW_TYPE_CONTEXTUAL_SIDECAR).length >
+      0
+    ) {
+      await this.app.workspace.getRightLeaf(false).setViewState({
+        type: VIEW_TYPE_CONTEXTUAL_SIDECAR,
+        active: true,
+      });
+    }
 
     this.app.workspace.revealLeaf(
       this.app.workspace.getLeavesOfType(VIEW_TYPE_CONTEXTUAL_SIDECAR)[0]
@@ -76,9 +79,6 @@ class ContextualSidecarPanelSettingTab extends PluginSettingTab {
   display(): void {
     let { containerEl } = this;
     containerEl.empty();
-    containerEl.createEl("h2", {
-      text: "Settings for Contextual Sidecar Panel",
-    });
 
     // Some of this logic was inspired by the bwydoogh/obsidian-force-view-mode-of-note plugin.
 
