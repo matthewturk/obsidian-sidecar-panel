@@ -82,6 +82,33 @@ class ContextualSidecarPanelSettingTab extends PluginSettingTab {
 
     // Some of this logic was inspired by the bwydoogh/obsidian-force-view-mode-of-note plugin.
 
+    new Setting(this.containerEl)
+      .setName("Default Panel")
+      .setDesc(
+        "Specify a default sidebar panel file, if none is set in the frontmatter."
+      )
+      .addSearch((cb) => {
+        cb.setPlaceholder("Example: daily-note-panel")
+          .setValue(this.plugin.settings.defaultPanel)
+          .onChange(async (newPanel) => {
+            this.plugin.settings.defaultPanel = newPanel;
+            await this.plugin.saveSettings();
+          });
+      });
+    new Setting(this.containerEl)
+      .setName("Always use default panel?")
+      .setDesc(
+        "If checked, the default panel will be used for all files, even if one is specified in the frontmatter."
+      )
+      .addToggle((cb) => {
+        cb.setValue(this.plugin.settings.alwaysUseDefaultPanel).onChange(
+          async (value) => {
+            this.plugin.settings.alwaysUseDefaultPanel = value;
+            await this.plugin.saveSettings();
+          }
+        );
+      });
+
     new Setting(this.containerEl).setDesc(
       "Specify a sidecar panel for all files with a given tag.  These will be applied in order."
     );

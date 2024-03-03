@@ -53,7 +53,13 @@ file.
 
 - [ ] Add support for [metadatamenu](https://github.com/mdelobelle/metadatamenu) `fileClass`es to apply `sidecar-panel` attributes across queries.
 - [x] Add per-tag support, so that not all files have to have their properties modified to benefit.
+- [x] Add a default sidecar file and allow it to always be used even if others are to be applied.
 - [ ] Better support changes in properties and sidecar files for open files.
+
+## Version History
+
+- 0.2.3 -- First release in the plugin list!
+- 0.2.4 -- Add a default panel file and a toggle to always apply it.
 
 ## License
 
