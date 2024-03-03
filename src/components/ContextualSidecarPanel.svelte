@@ -31,6 +31,20 @@
     if (cache) {
       const fileTags = getAllTags(cache) || [];
       let sidecarPanelMarkdown: string[] = [];
+      // If the default panel is set, and the file doesn't have a sidecar-panel, or the alwaysUseDefaultPanel is set, then use the default panel.
+      if ($contextualSidecarPanelSetting.defaultPanel !== "") {
+        if (
+          $contextualSidecarPanelSetting.alwaysUseDefaultPanel ||
+          !(cache.frontmatter && cache.frontmatter["sidecar-panel"])
+        ) {
+          sidecarPanelMarkdown.push(
+            await readSidecarPanel(
+              $contextualSidecarPanelSetting.defaultPanel,
+              "/"
+            )
+          );
+        }
+      }
       for (const { tag, panel } of $contextualSidecarPanelSetting.tagMaps) {
         // I don't like that this is quadratic.  But, it shouldn't be called that often.  Right?
         const normalizedTag = tag.startsWith("#") ? tag.slice(1) : tag;
