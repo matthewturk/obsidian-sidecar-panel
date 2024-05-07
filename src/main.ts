@@ -185,10 +185,54 @@ class ContextualSidecarPanelSettingTab extends PluginSettingTab {
               this.display();
             });
         });
-
       s.infoEl.remove();
 
       div.appendChild(containerEl.lastChild as Node);
+    });
+
+    new Setting(this.containerEl).setDesc(
+      "Deactivate sidecar for specific files."
+    );
+    new Setting(this.containerEl)
+      .setDesc("Add new blocked file")
+      .addButton((button) => {
+        button
+          .setTooltip(
+            "Add another file to the list of those that will not " +
+              "activate a sidecar.  All files with this name, " +
+              "regardless of folder, will be blocked."
+          )
+          .setButtonText("+")
+          .setCta()
+          .onClick(async () => {
+            this.plugin.settings.blockList.push([]);
+            await this.plugin.saveSettings();
+            this.display();
+          });
+      });
+
+    this.plugin.settings.blockList.forEach((fn, index) => {
+      const div = containerEl.createEl("div");
+      const s = new Setting(this.containerEl)
+        .addSearch((cb) => {
+          cb.setPlaceholder("Example: a-special-note")
+            .setValue(fn)
+            .onChange(async (newFn) => {
+              this.plugin.settings.blockList[index] = newFn;
+              await this.plugin.saveSettings();
+            });
+        })
+        .addExtraButton((cb) => {
+          cb.setIcon("cross")
+            .setTooltip("Delete")
+            .onClick(async () => {
+              this.plugin.settings.blockList.splice(index, 1);
+
+              await this.plugin.saveSettings();
+
+              this.display();
+            });
+        });
     });
   }
 }
