@@ -1,7 +1,7 @@
 {
   "name": "sidecar-panel",
   "private": true,
-  "version": "0.2.6",
+  "version": "0.2.7",
   "main": "main.js",
   "type": "module",
   "scripts": {
