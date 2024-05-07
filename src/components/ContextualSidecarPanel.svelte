@@ -1,8 +1,8 @@
 <script lang="ts">
   import {
-    App,
+    type App,
     MarkdownRenderer,
-    Component,
+    type Component,
     TFile,
     getAllTags,
   } from "obsidian";
@@ -27,6 +27,13 @@
     if (!file) return;
     if (destination) destination.empty();
     let cache = app.metadataCache.getFileCache(file);
+    if (
+      $contextualSidecarPanelSetting.blockList.some(
+        (block) => file.basename === block
+      )
+    ) {
+      return;
+    }
 
     if (cache) {
       const fileTags = getAllTags(cache) || [];

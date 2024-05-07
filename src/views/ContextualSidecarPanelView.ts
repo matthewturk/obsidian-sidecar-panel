@@ -8,6 +8,7 @@ export class ContextualSidecarPanelView extends ItemView {
 	component!: Component;
 	currentFile: TFile | undefined;
 	icon: string = "container";
+	navigation: boolean = true;
 
 	getViewType() {
 		return VIEW_TYPE_CONTEXTUAL_SIDECAR;
