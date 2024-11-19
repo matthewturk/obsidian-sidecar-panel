@@ -6,6 +6,7 @@ import {
 import "virtual:uno.css";
 import { contextualSidecarPanelSetting, currentFile } from "./store";
 import { type ContextualSidecarPanelSettings, DEFAULT_SETTINGS } from "./types";
+import { get } from "svelte/store";
 
 export default class ContextualSidecarPanel extends Plugin {
   settings!: ContextualSidecarPanelSettings;
@@ -30,7 +31,9 @@ export default class ContextualSidecarPanel extends Plugin {
 
     this.registerEvent(
       this.app.workspace.on("file-open", (file) => {
-        currentFile.set(file);
+        if (file !== null) {
+          currentFile.set(file);
+        }
       })
     );
     this.addCommand({
@@ -67,6 +70,10 @@ export default class ContextualSidecarPanel extends Plugin {
     this.app.workspace.revealLeaf(
       this.app.workspace.getLeavesOfType(VIEW_TYPE_CONTEXTUAL_SIDECAR)[0]
     );
+  }
+
+  async getCurrentFile() {
+    return get(currentFile);
   }
 }
 
