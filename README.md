@@ -52,7 +52,9 @@ file.
 ## Embedding Fun Buttons
 
 Using
-[obsidian-meta-bind](https://github.com/mProjectsCode/obsidian-meta-bind-plugin), you can embed notes. For instance, I have this in a `latex-editor` file which I apply to any file with the tag `#latex`:
+[obsidian-meta-bind](https://github.com/mProjectsCode/obsidian-meta-bind-plugin),
+you can embed notes. For instance, I have this in a `latex-editor` file which I
+apply to any file with the tag `#latex`:
 
 ```meta-bind-button
 label: Export to PDF
@@ -69,10 +71,12 @@ actions:
       const pandoc = app.plugins.plugins["obsidian-pandoc"];
       const currentFile = await sidecar.getCurrentFile();
       const fullPath = app.vault.adapter.getFullPath(currentFile.path);
-      pandoc.startPandocExport(fullPath, "pdf", "pdf", "PDF");
+      const v = await pandoc.startPandocExport(fullPath, "pdf", "pdf", "PDF", currentFile);
 ```
 
 This puts a button up on in my sidecar panel that exports to PDF. Handy!
+(Probably worth noting that this specific button requires a change I've issued
+a pull request for.)
 
 ## Roadmap
 
