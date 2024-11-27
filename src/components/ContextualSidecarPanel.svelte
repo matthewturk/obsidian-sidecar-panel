@@ -5,6 +5,7 @@
     type Component,
     TFile,
     getAllTags,
+    normalizePath,
   } from "obsidian";
   import { onMount } from "svelte";
   import { currentFile, contextualSidecarPanelSetting } from "../store";
@@ -52,8 +53,19 @@
           );
         }
       }
+      // I don't like that these are quadratic.  But, it shouldn't be called that often.  Right?
+      for (const {
+        folder,
+        panel,
+      } of $contextualSidecarPanelSetting.folderMaps) {
+        const normalizedFolderPath = normalizePath(folder);
+        const normalizedFilePath = normalizePath(file.path);
+        if (normalizedFilePath.startsWith(normalizedFolderPath)) {
+          // We still read from the root, because the panel might be in a different folder.
+          sidecarPanelMarkdown.push(await readSidecarPanel(panel, "/"));
+        }
+      }
       for (const { tag, panel } of $contextualSidecarPanelSetting.tagMaps) {
-        // I don't like that this is quadratic.  But, it shouldn't be called that often.  Right?
         const normalizedTag = tag.startsWith("#") ? tag.slice(1) : tag;
         for (const tagCacheEntry of fileTags) {
           const normalizedEntry = tagCacheEntry.startsWith("#")
