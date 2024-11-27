@@ -26,5 +26,8 @@
     "typescript": "^5.2.2",
     "unocss": "^0.57.2",
     "vite": "^4.5.0"
+  },
+  "dependencies": {
+    "obsidian-utilities": "^1.1.5"
   }
 }

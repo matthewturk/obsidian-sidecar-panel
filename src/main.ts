@@ -1,9 +1,10 @@
-import { App, Plugin, PluginSettingTab, Setting } from "obsidian";
+import { App, Plugin, PluginSettingTab, Setting, TFolder } from "obsidian";
 import {
   ContextualSidecarPanelView,
   VIEW_TYPE_CONTEXTUAL_SIDECAR,
 } from "./views/ContextualSidecarPanelView";
 import "virtual:uno.css";
+import { FolderInputSuggest } from "obsidian-utilities";
 import { contextualSidecarPanelSetting, currentFile } from "./store";
 import { type ContextualSidecarPanelSettings, DEFAULT_SETTINGS } from "./types";
 import { get } from "svelte/store";
@@ -22,6 +23,14 @@ export default class ContextualSidecarPanel extends Plugin {
 
   async onload() {
     await this.loadSettings();
+    if (this.settings.folderMaps === undefined) {
+      this.settings.folderMaps = [];
+      this.saveSettings();
+    }
+    if (this.settings.tagMaps === undefined) {
+      this.settings.tagMaps = [];
+      this.saveSettings();
+    }
     contextualSidecarPanelSetting.set(this.settings);
 
     this.registerView(
@@ -117,6 +126,84 @@ class ContextualSidecarPanelSettingTab extends PluginSettingTab {
       });
 
     new Setting(this.containerEl).setDesc(
+      "Specify a sidecar panel for all files within a given folder.  These will be applied in order, before tag mappings."
+    );
+    new Setting(this.containerEl)
+      .setDesc("Add new folder map")
+      .addButton((button) => {
+        button
+          .setTooltip("Add another folder to map to a panel")
+          .setButtonText("+")
+          .setCta()
+          .onClick(async () => {
+            this.plugin.settings.folderMaps.push({
+              folder: "",
+              panel: "",
+            });
+            await this.plugin.saveSettings();
+            this.display();
+          });
+      });
+
+    this.plugin.settings.folderMaps.forEach(({ folder, panel }, index) => {
+      const div = containerEl.createEl("div");
+      const s = new Setting(this.containerEl)
+        .addSearch((cb) => {
+          const folders: TFolder[] = this.app.vault
+            .getAllLoadedFiles()
+            .filter<TFolder>((f) => f instanceof TFolder);
+          const modal = new FolderInputSuggest(this.app, cb, folders);
+          modal.onSelect(({ item }) => {
+            cb.setValue(item.path);
+            cb.inputEl.trigger("input");
+            modal.close();
+          });
+
+          cb.setPlaceholder("Example: /templates/")
+            .setValue(folder)
+            .onChange(async (newFolder) => {
+              if (
+                newFolder &&
+                this.plugin.settings.folderMaps.some(
+                  (e) => e.folder == newFolder
+                )
+              ) {
+                console.error(
+                  "ForceViewMode: This folder is already associated with a panel: ",
+                  newFolder
+                );
+
+                return;
+              }
+
+              this.plugin.settings.folderMaps[index].folder = newFolder;
+
+              await this.plugin.saveSettings();
+            });
+        })
+        .addSearch((cb) => {
+          cb.setPlaceholder("Example: template-panel")
+            .setValue(panel)
+            .onChange(async (newPanel) => {
+              this.plugin.settings.folderMaps[index].panel = newPanel;
+
+              await this.plugin.saveSettings();
+            });
+        })
+        .addExtraButton((cb) => {
+          cb.setIcon("cross")
+            .setTooltip("Delete")
+            .onClick(async () => {
+              this.plugin.settings.folderMaps.splice(index, 1);
+
+              await this.plugin.saveSettings();
+
+              this.display();
+            });
+        });
+    });
+
+    new Setting(this.containerEl).setDesc(
       "Specify a sidecar panel for all files with a given tag.  These will be applied in order."
     );
     new Setting(this.containerEl)
@@ -192,9 +279,6 @@ class ContextualSidecarPanelSettingTab extends PluginSettingTab {
               this.display();
             });
         });
-      s.infoEl.remove();
-
-      div.appendChild(containerEl.lastChild as Node);
     });
 
     new Setting(this.containerEl).setDesc(
