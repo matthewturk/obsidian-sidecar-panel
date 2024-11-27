@@ -117,24 +117,95 @@ class ContextualSidecarPanelSettingTab extends PluginSettingTab {
       });
 
     new Setting(this.containerEl).setDesc(
-      "Specify a sidecar panel for all files with a given tag.  These will be applied in order."
+      "Specify a sidecar panel for all files within a given folder.  These will be applied in order, before tag mappings."
     );
     new Setting(this.containerEl)
-      .setDesc("Add new tag map")
+      .setDesc("Add new folder map")
       .addButton((button) => {
         button
-          .setTooltip("Add another tag to map to a panel")
+          .setTooltip("Add another folder to map to a panel")
           .setButtonText("+")
           .setCta()
           .onClick(async () => {
-            this.plugin.settings.tagMaps.push({
-              tag: "",
+            this.plugin.settings.folderMaps.push({
+              folder: "",
               panel: "",
             });
             await this.plugin.saveSettings();
             this.display();
           });
       });
+
+    this.plugin.settings.folderMaps.forEach(({ folder, panel }, index) => {
+      const div = containerEl.createEl("div");
+      const s = new Setting(this.containerEl)
+        .addSearch((cb) => {
+          cb.setPlaceholder("Example: /templates/")
+            .setValue(folder)
+            .onChange(async (newFolder) => {
+              if (
+                newFolder &&
+                this.plugin.settings.folderMaps.some(
+                  (e) => e.folder == newFolder
+                )
+              ) {
+                console.error(
+                  "ForceViewMode: This folder is already associated with a panel: ",
+                  newFolder
+                );
+
+                return;
+              }
+
+              this.plugin.settings.folderMaps[index].folder = newFolder;
+
+              await this.plugin.saveSettings();
+            });
+        })
+        .addSearch((cb) => {
+          cb.setPlaceholder("Example: template-panel")
+            .setValue(panel)
+            .onChange(async (newPanel) => {
+              this.plugin.settings.folderMaps[index].panel = newPanel;
+
+              await this.plugin.saveSettings();
+            });
+        })
+        .addExtraButton((cb) => {
+          cb.setIcon("cross")
+            .setTooltip("Delete")
+            .onClick(async () => {
+              this.plugin.settings.folderMaps.splice(index, 1);
+
+              await this.plugin.saveSettings();
+
+              this.display();
+            });
+        });
+
+      new Setting(this.containerEl).setDesc(
+        "Specify a sidecar panel for all files with a given tag.  These will be applied in order."
+      );
+      new Setting(this.containerEl)
+        .setDesc("Add new tag map")
+        .addButton((button) => {
+          button
+            .setTooltip("Add another tag to map to a panel")
+            .setButtonText("+")
+            .setCta()
+            .onClick(async () => {
+              this.plugin.settings.tagMaps.push({
+                tag: "",
+                panel: "",
+              });
+              await this.plugin.saveSettings();
+              this.display();
+            });
+        });
+      s.infoEl.remove();
+
+      div.appendChild(containerEl.lastChild as Node);
+    });
 
     this.plugin.settings.tagMaps.forEach(({ tag, panel }, index) => {
       const div = containerEl.createEl("div");
