@@ -201,27 +201,27 @@ class ContextualSidecarPanelSettingTab extends PluginSettingTab {
               this.display();
             });
         });
-
-      new Setting(this.containerEl).setDesc(
-        "Specify a sidecar panel for all files with a given tag.  These will be applied in order."
-      );
-      new Setting(this.containerEl)
-        .setDesc("Add new tag map")
-        .addButton((button) => {
-          button
-            .setTooltip("Add another tag to map to a panel")
-            .setButtonText("+")
-            .setCta()
-            .onClick(async () => {
-              this.plugin.settings.tagMaps.push({
-                tag: "",
-                panel: "",
-              });
-              await this.plugin.saveSettings();
-              this.display();
-            });
-        });
     });
+
+    new Setting(this.containerEl).setDesc(
+      "Specify a sidecar panel for all files with a given tag.  These will be applied in order."
+    );
+    new Setting(this.containerEl)
+      .setDesc("Add new tag map")
+      .addButton((button) => {
+        button
+          .setTooltip("Add another tag to map to a panel")
+          .setButtonText("+")
+          .setCta()
+          .onClick(async () => {
+            this.plugin.settings.tagMaps.push({
+              tag: "",
+              panel: "",
+            });
+            await this.plugin.saveSettings();
+            this.display();
+          });
+      });
 
     this.plugin.settings.tagMaps.forEach(({ tag, panel }, index) => {
       const div = containerEl.createEl("div");
