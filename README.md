@@ -17,6 +17,10 @@ that say things like "Add another TODO" or something like that.
 
 ![A screenshot showing the sidecar panel in action.](sidecar-panel-example.png)
 
+This uses the [how to release your Obsidian
+Plugin](https://docs.obsidian.md/Plugins/Releasing/Release+your+plugin+with+GitHub+Actions)
+workflow.
+
 ## How to Use
 
 There are two ways to associate a sidecar panel with a file. The first is to
@@ -90,6 +94,7 @@ a pull request for.)
 - 0.2.3 -- First release in the plugin list!
 - 0.2.4 -- Add a default panel file and a toggle to always apply it.
 - 0.3.0 -- Added a `getCurrentFile` function for use in embedded widgets.
+- 0.3.2 -- Added a new folder mapping function
 
 ## License
 
