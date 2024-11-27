@@ -213,9 +213,6 @@ class ContextualSidecarPanelSettingTab extends PluginSettingTab {
               this.display();
             });
         });
-      s.infoEl.remove();
-
-      div.appendChild(containerEl.lastChild as Node);
     });
 
     this.plugin.settings.tagMaps.forEach(({ tag, panel }, index) => {
@@ -274,9 +271,6 @@ class ContextualSidecarPanelSettingTab extends PluginSettingTab {
               this.display();
             });
         });
-      s.infoEl.remove();
-
-      div.appendChild(containerEl.lastChild as Node);
     });
 
     new Setting(this.containerEl).setDesc(
