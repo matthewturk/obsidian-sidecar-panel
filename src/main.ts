@@ -1,9 +1,10 @@
-import { App, Plugin, PluginSettingTab, Setting } from "obsidian";
+import { App, Plugin, PluginSettingTab, Setting, TFolder } from "obsidian";
 import {
   ContextualSidecarPanelView,
   VIEW_TYPE_CONTEXTUAL_SIDECAR,
 } from "./views/ContextualSidecarPanelView";
 import "virtual:uno.css";
+import { FolderInputSuggest } from "obsidian-utilities";
 import { contextualSidecarPanelSetting, currentFile } from "./store";
 import { type ContextualSidecarPanelSettings, DEFAULT_SETTINGS } from "./types";
 import { get } from "svelte/store";
@@ -140,6 +141,16 @@ class ContextualSidecarPanelSettingTab extends PluginSettingTab {
       const div = containerEl.createEl("div");
       const s = new Setting(this.containerEl)
         .addSearch((cb) => {
+          const folders: TFolder[] = this.app.vault
+            .getAllLoadedFiles()
+            .filter<TFolder>((f) => f instanceof TFolder);
+          const modal = new FolderInputSuggest(this.app, cb, folders);
+          modal.onSelect(({ item }) => {
+            cb.setValue(item.path);
+            cb.inputEl.trigger("input");
+            modal.close();
+          });
+
           cb.setPlaceholder("Example: /templates/")
             .setValue(folder)
             .onChange(async (newFolder) => {
