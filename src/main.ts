@@ -23,6 +23,14 @@ export default class ContextualSidecarPanel extends Plugin {
 
   async onload() {
     await this.loadSettings();
+    if (this.settings.folderMaps === undefined) {
+      this.settings.folderMaps = [];
+      this.saveSettings();
+    }
+    if (this.settings.tagMaps === undefined) {
+      this.settings.tagMaps = [];
+      this.saveSettings();
+    }
     contextualSidecarPanelSetting.set(this.settings);
 
     this.registerView(
