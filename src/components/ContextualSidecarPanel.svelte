@@ -25,7 +25,7 @@
   }
 
   async function updateSidecarPanel(file: TFile | null) {
-    if (!file) return;
+    if (!file || !destination) return;
     if (destination) destination.empty();
     let cache = app.metadataCache.getFileCache(file);
     if (
