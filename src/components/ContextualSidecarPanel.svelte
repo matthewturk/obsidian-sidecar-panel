@@ -84,6 +84,7 @@
           await readSidecarPanel(cache.frontmatter["sidecar-panel"], "/")
         );
       }
+      //console.log(`Rendering as thought part of ${file.path}`);
       await MarkdownRenderer.render(
         app,
         sidecarPanelMarkdown.join("\n"),
