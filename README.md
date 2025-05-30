@@ -95,6 +95,7 @@ a pull request for.)
 - 0.2.4 -- Add a default panel file and a toggle to always apply it.
 - 0.3.0 -- Added a `getCurrentFile` function for use in embedded widgets.
 - 0.3.2 -- Added a new folder mapping function
+- 0.4.0 -- Fixed a `obsidian-meta-bind` interoperability problem by not allowing the sidecar view to take `activeLeaf` status.
 
 ## License
 
