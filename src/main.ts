@@ -5,7 +5,11 @@ import {
 } from "./views/ContextualSidecarPanelView";
 import "virtual:uno.css";
 import { FolderInputSuggest } from "obsidian-utilities";
-import { contextualSidecarPanelSetting, currentFile } from "./store";
+import {
+  contextualSidecarPanelSetting,
+  currentFile,
+  currentLeaf,
+} from "./store";
 import { type ContextualSidecarPanelSettings, DEFAULT_SETTINGS } from "./types";
 import { get } from "svelte/store";
 
@@ -42,6 +46,29 @@ export default class ContextualSidecarPanel extends Plugin {
       this.app.workspace.on("file-open", (file) => {
         if (file !== null) {
           currentFile.set(file);
+        }
+      })
+    );
+    this.registerEvent(
+      this.app.workspace.on("active-leaf-change", (leaf) => {
+        // if the leaf is not a sidecar panel, do nothing
+        //console.log("Active leaf changed", leaf);
+        //console.log("Current active file", this.app.workspace.getActiveFile());
+        if (leaf?.view?.getViewType() === VIEW_TYPE_CONTEXTUAL_SIDECAR) {
+          const oldLeaf = get(currentLeaf);
+          if (oldLeaf !== null) {
+            //console.log("Resetting current leaf to", oldLeaf);
+            this.app.workspace.setActiveLeaf(oldLeaf, {
+              focus: false,
+            });
+          }
+        } else if (leaf !== null) {
+          //console.log("Setting current leaf to", leaf.id);
+          currentLeaf.set(leaf);
+          return;
+        } else {
+          return;
+          //console.log("No active leaf, not updating current leaf");
         }
       })
     );
